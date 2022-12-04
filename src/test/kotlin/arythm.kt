@@ -44,7 +44,7 @@ class ArythmText {
 
     @Test
     fun testLongExpr() {
-        val expr = "(/ 1000 (* 5 (+ 2 (- 10 7))))".byteInputStream()
+        val expr = "(/ 1000 (* 5 (+ 2 (- (+ 15 (- 5)) 7))))".byteInputStream()
         val res = "40"
         run(expr, res)
     }
