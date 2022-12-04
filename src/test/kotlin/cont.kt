@@ -23,7 +23,7 @@ class Continuation {
         val expr = """
             |((call/cc (lambda (x) (set! con1 x) (if param car cdr))) (list 1 2 3 4))
         """.trimMargin().byteInputStream()
-        val expResult = "(2 3 4)"
+        val expResult = "(2 3 4"
         val test = InputPort(InputStreamReader(expr))
         val testResult = interpreter.loadForTest(test, interpreter.sessionEnv!!)
         assert(expResult == testResult)
