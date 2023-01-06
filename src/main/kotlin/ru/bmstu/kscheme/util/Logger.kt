@@ -1,12 +1,22 @@
 package ru.bmstu.kscheme.util
 
+import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import java.util.logging.Logger
 
 object Logger {
     private val julLogger = Logger.getLogger("kscheme")
-    val levelValue
-        get() = getLevelValue(julLogger.level)
+    val levelValue: Int
+        get() {
+            if (julLogger.handlers.isEmpty()) {
+                julLogger.useParentHandlers = false
+                val consoleHandler = ConsoleHandler()
+                consoleHandler.level = java.util.logging.Level.INFO
+                julLogger.addHandler(consoleHandler)
+                julLogger.level = java.util.logging.Level.INFO
+            }
+            return getLevelValue(julLogger.level)
+        }
 
     fun warning(ex: Exception) {
         julLogger.log(java.util.logging.Level.WARNING, ex) { ex.message }

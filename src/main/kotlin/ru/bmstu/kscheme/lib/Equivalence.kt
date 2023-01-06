@@ -22,7 +22,7 @@ object Equivalence {
         documentation = "(eq? 'a 'a) => #t but (eq? (list 'a) (list 'a)) => #f"
     ) {
         override fun apply2(arg1: Entity, arg2: Entity, environment: Environment, cont: Continuation): Entity {
-            return KSBoolean.makeKSBoolean(arg1 === arg2)
+            return KSBoolean.makeKSBoolean(arg1 == arg2)
         }
     }
 

@@ -5,6 +5,7 @@ import ru.bmstu.kscheme.lang.base.List
 import ru.bmstu.kscheme.lang.ListIterator
 import ru.bmstu.kscheme.lang.action.AssignmentAction
 import ru.bmstu.kscheme.lang.action.ExpressionAction
+import ru.bmstu.kscheme.lang.action.IfAction
 import ru.bmstu.kscheme.lang.base.Entity
 import ru.bmstu.kscheme.lang.procedure.Closure
 import ru.bmstu.kscheme.lang.procedure.Continuation
@@ -13,7 +14,7 @@ import ru.bmstu.kscheme.lang.type.Undefined
 import ru.bmstu.kscheme.lang.type.Void
 
 object Syntax {
-    val primitives = arrayOf(`Set!`, Quote, Define, Lambda, If, Begin, Case)
+    val primitives = arrayOf(`Set!`, Quote, Define, Lambda, If, Begin, Case, MakeRewriter, Cond, Let, Else, Quasiquote)
 
     object Quote : Primitive(
         name = "quote",
@@ -28,6 +29,15 @@ object Syntax {
             return arg1
         }
     }
+
+    object Quasiquote : Primitive(
+        name = "quasiquote",
+        definitionEnv = Environment.Kind.NULL_ENV,
+        keyword = Primitive.KEYWORD,
+        minArgs = 1, maxArgs = 1,
+        comment = "",
+        documentation = null
+    )
 
     object Define : Primitive(
         name = "define",
@@ -160,12 +170,65 @@ object Syntax {
         minArgs = 0,
         maxArgs = -1,
         comment = "",
-        documentation = "(case (expr) ((variant1) expr1) ((variant2) expr2) ..."
+        documentation = "(case (expr) ((variant1) expr1) ((variant2) expr2) ...)"
     ) {
         override fun applyN(args: List, environment: Environment, cont: Continuation): Entity {
             TODO("Not implemented yet")
         }
     }
 
-    // TODO: do, quasiquote, ! else, ! let, ! let*, cond, unquote, unquote-splicing, make-rewriter, rewrite1
+    object Let : Primitive(
+        name = "let",
+        definitionEnv = Environment.Kind.NULL_ENV,
+        keyword = KEYWORD,
+        minArgs = 1,
+        maxArgs = -1,
+        comment = "Introduce bindings, e.g. (let ((x 2) (y 3)) (* x y))",
+        documentation = null
+    )
+
+    object Cond : Primitive(
+        name = "cond",
+        definitionEnv = Environment.Kind.NULL_ENV,
+        keyword = KEYWORD,
+        minArgs = 0,
+        maxArgs = -1,
+        comment = "",
+        documentation = "(cond ((variant1) expr1) ((variant2) expr2) ...)"
+    )
+
+    object Else : Primitive(
+        name = "else",
+        definitionEnv = Environment.Kind.NULL_ENV,
+        keyword = Primitive.KEYWORD,
+        minArgs = 0,
+        maxArgs = -1,
+        comment = null,
+        documentation = null
+    )
+
+    object MakeRewriter : Primitive(
+        name = "make-rewriter",
+        definitionEnv = Environment.Kind.REPORT_ENV,
+        keyword = IDENTIFIER,
+        minArgs = 1,
+        maxArgs =  1,
+        comment = "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
+        documentation = null
+    ) {
+        override fun apply1(arg1: Entity, environment: Environment, cont: Continuation): Entity {
+            // evaluate argument: must be a function of exactly one argument
+            // obj = obj.eval(env, cont);
+            return if (arg1 !is Closure) {
+                throw Exception("$this argument must be a function taking one argument $arg1")
+            } else {
+                if (arg1.getMaxArity() != 1) {
+                    throw Exception("$this argument must be a function taking one argument $arg1")
+                }
+                SyntaxRewriter(arg1)
+            }
+        }
+    }
+
+    // TODO: do, ! let*, unquote, unquote-splicing, rewrite1
 }

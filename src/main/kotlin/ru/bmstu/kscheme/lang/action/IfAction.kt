@@ -1,5 +1,6 @@
-package ru.bmstu.kscheme.lang
+package ru.bmstu.kscheme.lang.action
 
+import ru.bmstu.kscheme.lang.Environment
 import ru.bmstu.kscheme.lang.base.Action
 import ru.bmstu.kscheme.lang.base.Entity
 import ru.bmstu.kscheme.lang.procedure.Continuation

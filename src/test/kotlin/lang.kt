@@ -89,6 +89,34 @@ class LangTests {
         run(expr, res)
     }
 
+    @Test
+    fun `if`() {
+        val expr = "(if (> 5 2) 'true 'false)".byteInputStream()
+        val res = "true"
+        run(expr, res)
+    }
+
+    @Test
+    fun if2() {
+        val expr = "(if (< 5 2) 'true 'false)".byteInputStream()
+        val res = "false"
+        run(expr, res)
+    }
+
+    @Test
+    fun cond1() {
+        val expr = "(cond ((> 5 2) 'true) ((< 5 2) 'false))".byteInputStream()
+        val res = "true"
+        run(expr, res)
+    }
+
+    @Test
+    fun cond2() {
+        val expr = "(cond ((< 5 2) 'less) ((> 5 2) 'more))".byteInputStream()
+        val res = "more"
+        run(expr, res)
+    }
+
     private fun run(expr: InputStream, expectedRes: String) {
         val test = InputPort(InputStreamReader(expr))
         val testResult = interpreter.loadForTest(test, interpreter.sessionEnv!!)

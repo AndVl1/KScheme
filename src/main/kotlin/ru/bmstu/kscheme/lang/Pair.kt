@@ -68,7 +68,7 @@ class Pair(
         if (operator is Symbol) {
             val e = env.lookup(operator)
             if (e is SyntaxRewriter) {
-                rewriteAndEval(e, ArgumentList(cdr as List), env, continuation)
+                rewriteAndEval(e, ArgumentList(), env, continuation)
                 return null
             } else if (e is SyntaxProcedure) {
                 continuation.begin(ExpressionAction(operator, env))

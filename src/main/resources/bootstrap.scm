@@ -40,16 +40,16 @@
       (last (cdr x)))
     (error "last" x)))
 
-;(define (append . args)
-;  (define (_append2 lst1 lst2)
-;    (if (null? lst1)
-;        lst2
-;        (cons (car lst1) (_append2 (cdr lst1) lst2))))
-;  (if (not (pair? args))
-;      args
-;      (if (null? (cdr args))
-;        (car args)
-;        (_append2 (car args) (apply append (cdr args))))))
+(define (append . args)
+  (define (_append2 lst1 lst2)
+    (if (null? lst1)
+        lst2
+        (cons (car lst1) (_append2 (cdr lst1) lst2))))
+  (if (not (pair? args))
+      args
+      (if (null? (cdr args))
+        (car args)
+        (_append2 (car args) (apply append (cdr args))))))
 ;------------------------------------------------
 
 ; nconc
@@ -60,56 +60,56 @@
 
 ;------------------------------------------------
 ;todo
-;(define (tag-backquote? x)
-;  (if (pair? x)
-;    (eq? (car x) 'quasiquote)
-;    #f))
-;
-;(define (tag-comma? x)
-;  (if (pair? x)
-;    (eq? (car x) 'unquote)
-;    #f))
-;
-;(define (tag-comma-atsign? x)
-;  (if (pair? x)
-;    (eq? (car x) 'unquote-splicing)
-;    #f))
-;
-;(define (tag-data x) (car (cdr x)))
-;
-;(define (qq-expand x)
-;  (if (tag-comma? x)
-;   (tag-data x)
-;  (if (tag-comma-atsign? x)
-;   (error "illegal usage of ,@")
-;  (if (tag-backquote? x)
-;   (qq-expand
-;    (qq-expand (tag-data x)))
-;  (if (pair? x)
-;   (list 'append
-;    (qq-expand-list (car x))
-;    (qq-expand (cdr x)))
-;   (list 'quote x))))))
-;
-;(define (qq-expand-list x)
-;  (if (tag-comma? x)
-;   (list 'list (tag-data x))
-;  (if (tag-comma-atsign? x)
-;   (tag-data x)
-;  (if (tag-backquote? x)
-;   (qq-expand-list
-;     (qq-expand (tag-data x)))
-;  (if (pair? x)
-;   (list 'list
-;      (list 'append
-;        (qq-expand-list (car x))
-;        (qq-expand (cdr x))))
-;   (list 'quote (list x)))))))
-;
-;(define quasiquote
-;  (make-rewriter (lambda (_x)
-;    (qq-expand (tag-data _x))
-;    )))
+(define (tag-backquote? x)
+  (if (pair? x)
+    (eq? (car x) 'quasiquote)
+    #f))
+
+(define (tag-comma? x)
+  (if (pair? x)
+    (eq? (car x) 'unquote)
+    #f))
+
+(define (tag-comma-atsign? x)
+  (if (pair? x)
+    (eq? (car x) 'unquote-splicing)
+    #f))
+
+(define (tag-data x) (car (cdr x)))
+
+(define (qq-expand x)
+  (if (tag-comma? x)
+   (tag-data x)
+  (if (tag-comma-atsign? x)
+   (error "illegal usage of ,@")
+  (if (tag-backquote? x)
+   (qq-expand
+    (qq-expand (tag-data x)))
+  (if (pair? x)
+   (list 'append
+    (qq-expand-list (car x))
+    (qq-expand (cdr x)))
+   (list 'quote x))))))
+
+(define (qq-expand-list x)
+  (if (tag-comma? x)
+   (list 'list (tag-data x))
+  (if (tag-comma-atsign? x)
+   (tag-data x)
+  (if (tag-backquote? x)
+   (qq-expand-list
+     (qq-expand (tag-data x)))
+  (if (pair? x)
+   (list 'list
+      (list 'append
+        (qq-expand-list (car x))
+        (qq-expand (cdr x))))
+   (list 'quote (list x)))))))
+
+(define quasiquote
+  (make-rewriter (lambda (_x)
+    (qq-expand (tag-data _x))
+    )))
 ;------------------------------------------------
 
 ;;;; PRIMITIVE  PROCEDURES
@@ -230,7 +230,6 @@
 ;------------------------------------------------
 
 ;------------------------------------------------
-;todo
 (define (assv obj alist)
     (if (null? alist) #f
   (if (not (pair? alist))
@@ -246,4 +245,46 @@
       (if (equal? (caar alist) obj) (car alist)
     (assoc obj (cdr alist))))))
 ;------------------------------------------------
-;todo
+(define _defmacro (make-rewriter
+                    (lambda (_x)
+                      `(define ,(caar (cdr _x)) (make-rewriter
+                                                  (lambda (_form) (_let1 (( ,@(cdar (cdr _x)) (cdr _form) ))
+                                                                    (begin ,@(cdr (cdr _x)) )))))) ))
+
+(define _let1 (make-rewriter
+                (lambda (_x)
+                  `( (lambda (,(caaar (cdr _x))) ,@(cdr (cdr _x))  )
+                     ,(cadaar (cdr _x)) ) )))
+
+(_defmacro (let _x)
+  (define decl (car _x))
+  (define body (cdr _x))
+  `((lambda ,(map car decl) ,@body) ,@(map cadr decl)  ))
+
+(_defmacro (let* x)
+  (if (null? (cdar x))
+    `(let ,@x)
+    `(let (,(caar x)) (let* ,(cdar x) ,@(cdr x)) )))
+
+(_defmacro (cond form)
+  (if (null? form) ''()
+                   (let ((c1 (car form)))
+                     (if (not (pair? c1))
+                       (error "invalid cond syntax: " form)
+                       (if (eq? (car c1) 'else)
+                         `(begin ,@(cdr c1))
+                         (if (null? (cdr c1))
+                           `(or ,(car c1)
+                              (cond ,@(cddr form)))
+                           (if (eq? (cadr c1) '=>)
+                             (let ((t (gensym "_t"))
+                                    (r (gensym "_r"))
+                                    (c (gensym "_c")))
+                               `(let ((,t ,(car c1))
+                                       (,r (lambda () ,@(cddr c1)))
+                                       (,c (lambda () (cond ,@(cdr form)))))
+                                  (if ,t ((,r),t) (,c))) )
+                             `(if ,(car c1)
+                                (begin ,@(cdr c1))
+                                (cond ,@(cdr form)))
+                             )))))))

@@ -6,13 +6,14 @@ import ru.bmstu.kscheme.lang.ListIterator
 import ru.bmstu.kscheme.lang.type.Number
 import ru.bmstu.kscheme.lang.base.Entity
 import ru.bmstu.kscheme.lang.procedure.Continuation
+import ru.bmstu.kscheme.lang.type.KSBoolean
 import ru.bmstu.kscheme.lang.type.Real
 import java.math.BigDecimal
 
 object Numbers {
 
     val primitives = arrayOf(
-        Minus, Plus, Divide, Multiply
+        Minus, Plus, Divide, Multiply, NumberQ
     )
 
     object Minus : Primitive(
@@ -105,6 +106,20 @@ object Numbers {
                 result *= getNumberArgument(this, iterator.next())
             }
             return Real(result)
+        }
+    }
+
+    object NumberQ : Primitive(
+        name = "number?",
+        definitionEnv = Environment.Kind.REPORT_ENV,
+        keyword = Primitive.IDENTIFIER,
+        minArgs = 1,
+        maxArgs = 1,
+        comment = "true if number else false",
+        documentation = "(number? 3) => #t"
+    ) {
+        override fun apply1(arg1: Entity, environment: Environment, cont: Continuation): Entity {
+            return KSBoolean.makeKSBoolean(arg1 is Number)
         }
     }
 
