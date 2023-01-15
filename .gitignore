@@ -37,3 +37,12 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/report/blank_course_report.aux
+/report/blank_course_report.bbl
+/report/blank_course_report.bcf
+/report/blank_course_report.blg
+/report/blank_course_report.log
+/report/blank_course_report.out
+/report/blank_course_report.run.xml
+/report/blank_course_report.toc
+/report/_minted-blank_course_report/
