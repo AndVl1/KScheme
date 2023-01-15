@@ -27,7 +27,6 @@
 ;(define (list . elems) elems)
 
 ;------------------------------------------------
-;todo
 (define (list-copy x)
   (if (pair? x)
     (cons (car x) (list-copy (cdr x)))
@@ -117,7 +116,6 @@
 ;;; equal?
 
 ;------------------------------------------------
-;todo
 (define (equal? a b)
   (define (equal-pair? a b)
     (if (equal? (car a) (car b))
@@ -135,7 +133,6 @@
 ;;; map
 
 ;------------------------------------------------
-;todo
 (define (map f list)
   (define (map1 f list res)
     (if (null? list)

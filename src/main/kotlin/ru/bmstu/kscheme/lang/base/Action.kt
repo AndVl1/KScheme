@@ -26,7 +26,7 @@ abstract class Action(
         if (env?.interpreter?.traceEnabled == true) {
             val cout = env.out ?: return
             val actionName = this.javaClass.simpleName.replace("Action", "")
-            cout.printf("%s ", actionName)
+            cout.print("$actionName ")
             doo.print(cout)
         }
     }
