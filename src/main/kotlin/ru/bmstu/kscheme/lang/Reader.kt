@@ -59,19 +59,19 @@ class Reader(reader: Reader) {
             "(" -> {
                 return readList(Pair(car = EmptyList.VALUE, cdr = EmptyList.VALUE))
             }
-            "'" -> { return Pair(car = Symbol.QUOTE, Pair(car = readObject() ?: return null, cdr = EmptyList.VALUE)) }
-            "`" -> { return Pair(car = Symbol.QUASIQUOTE, Pair(car = readObject() ?: return null, cdr = EmptyList.VALUE)) }
+            "'" -> { return Pair(car = Symbol.QUOTE, cdr = Pair(car = readObject() ?: return null, cdr = EmptyList.VALUE)) }
+            "`" -> { return Pair(car = Symbol.QUASIQUOTE, cdr = Pair(car = readObject() ?: return null, cdr = EmptyList.VALUE)) }
             ")" -> { throw Exception("Unexpected \")\"") }
             else -> { return readOthers(token) }
         }
     }
-    
+
     private fun readList(l: Pair): Entity? {
         var t: String?
         var first = true
         var seendot = false
 
-        var ins = l // which cons are we inserting stuff into?
+        var ins = l
 
         while (true) {
             t = readToken()

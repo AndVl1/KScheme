@@ -41,14 +41,6 @@ class Interpreter() {
         setSessionEnv(interactionEnv, Environment.newEnvironment(cin!!, cout!!))
     }
 
-    fun evaluate(expr: String): String {
-        val result = StringBuilder()
-        for (symbol in expr) {
-
-        }
-        return result.toString()
-    }
-
     fun bootstrap() {
         if (!bootstrapped) {
             val bootstrap = InputPort(

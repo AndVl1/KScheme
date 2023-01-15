@@ -70,12 +70,6 @@ open class Environment : AbstractEntity {
         return null
     }
 
-    fun dump() {
-        if (out != null) {
-
-        }
-    }
-
     enum class Kind {
         NULL_ENV, REPORT_ENV, INTERACTION_ENV
     }
