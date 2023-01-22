@@ -586,35 +586,20 @@
 \caption{Описание грамматики языка Scheme в форме Бэкуса-Наура}
 \label{lst:schemebnf}
 \begin{minted}[frame=single,fontsize = \footnotesize, linenos, breaklines, xleftmargin = 1.5em,breaksymbol = ""]{BNF}
-<program> ::= {<definition> | <expression>}
-
+<program> ::= <expression>
+<expression> ::= <constant> | <variable> | <procedure-call> | <conditional> | <lambda> | <definition>
+<constant> ::= <number> | <boolean> | <string> | <char> | <symbol>
+<number> ::= [0-9]+
+<boolean> ::= #t | #f
+<string> ::= ".*"
+<char> ::= #\\.
+<symbol> ::= [a-zA-Z]+
+<variable> ::= [a-zA-Z]+
+<procedure-call> ::= (<procedure> <expression>*)
+<procedure> ::= + | - | * | / | number? | not | boolean? | char? | string? | symbol? | eq? | eqv? | > | < | car | cdr | cons | list | pair? | null? | set-car! | set-cdr! | quote | quasiquote | define | lambda | if | set! | begin | cond | else | load | eof-object? | read | display | write | newline | flush | port? | input-port? | output-port? | textual-port? | binary-port? | current-input-port | current-output-port | eval | null-environment | scheme-report-environment | interaction-environment | current-environment | in-environment | make-environment | environment? | call-with-current-continuation | procedure? | apply
+<conditional> ::= (if <expression> <expression> <expression>)
+<lambda> ::= (lambda (<variable>*) <expression>)
 <definition> ::= (define <variable> <expression>)
-             |   (define (<variable> <variable> ...) <expression>)
-
-<expression> ::= <constant>
-             |   <variable>
-             |   (if <expression> <expression> <expression>)
-             |   (lambda (<variable> <variable> ...) <expression>)
-             |   (<expression> <expression> ...)
-
-<constant> ::= <number> | <string> | #t | #f
-
-<variable> ::= <identifier>
-
-<identifier> ::= <letter> {<letter> | <digit>}
-
-<number> ::= [+|-] <digit> {<digit>}
-          |   [+|-] <digit> {<digit>} . <digit> {<digit>}
-          |   [+|-] <digit> {<digit>} . <digit> {<digit>} <exponent>
-          |   [+|-] <digit> {<digit>} <exponent>
-
-<string> ::= " {<character>} "
-
-<letter> ::= a | b | c | ... | z | A | B | C | ... | Z
-
-<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-
-<exponent> ::= e [+|-] <digit> {<digit>}
 \end{minted}
 \end{listing}
 
