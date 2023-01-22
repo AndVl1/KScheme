@@ -30,7 +30,7 @@ class ArythmTest {
     @Test
     fun testSub() {
         val expr = "(- 10 2)".byteInputStream()
-        val res = "9"
+        val res = "8"
         run(expr, res)
     }
 
