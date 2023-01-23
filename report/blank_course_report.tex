@@ -597,7 +597,9 @@
 <variable> ::= [a-zA-Z]+
 <procedure-call> ::= (<procedure> <expression>*)
 <procedure> ::= + | - | * | / | number? | not | boolean? | char? | string? | symbol? | eq? | eqv? | > | < | car | cdr | cons | list | pair? | null? | set-car! | set-cdr! | quote | quasiquote | define | lambda | if | set! | begin | cond | else | load | eof-object? | read | display | write | newline | flush | port? | input-port? | output-port? | textual-port? | binary-port? | current-input-port | current-output-port | eval | null-environment | scheme-report-environment | interaction-environment | current-environment | in-environment | make-environment | environment? | call-with-current-continuation | procedure? | apply
-<conditional> ::= (if <expression> <expression> <expression>)
+<conditional> ::= (if <predicate> <expression> <expression>)
+	| (cond (<predicate> <expression>)+ [else <expression>])
+<predicate> ::= <expression>
 <lambda> ::= (lambda (<variable>*) <expression>)
 <definition> ::= (define <variable> <expression>)
 \end{minted}
