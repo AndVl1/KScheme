@@ -996,7 +996,6 @@ fun bootstrap() {
 
 \begin{longlisting}
 
-\subsection{Автоматизация тестирования}
 \caption{Код для тестирования интерпретатора}
 \label{lst:testrun}
 \begin{minted}[frame=single,fontsize = \footnotesize, linenos, breaklines, xleftmargin = 1.5em,breaksymbol = ""]{kotlin}
@@ -1056,6 +1055,8 @@ class SchemeInterpretTest {
 } // $
 \end{minted}
 \end{longlisting}
+
+\subsection{Автоматизация тестирования}
 
 Для поддержания стабильности работы исходного кода при добавлении нового кода было решено использовать Github Actions.
 Для общей стабильности при каждом коммите в ветку, из которой был создан \texttt{Pull request} запускается проверка сборки, чтобы в основную ветку не попал не собирающийся код.
